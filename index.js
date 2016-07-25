@@ -60,9 +60,7 @@ module.exports = class Altares {
         headers: {
           Authorization: `Bearer ${accessToken}`
         },
-        json: {
-          transaction: transaction
-        }
+        json: transaction
       };
 
       request(requestTransactionParams, (err, response, body) => (err || response.statusCode >= 400) ? reject(err) : resolve(body) );
@@ -94,9 +92,7 @@ module.exports = class Altares {
         headers: {
           Authorization: `Bearer ${accessToken}`
         },
-        json: {
-          user: user
-        }
+        json: user
       };
 
       request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err) : resolve(body) );
