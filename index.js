@@ -82,6 +82,36 @@ module.exports = class Altares {
       request(requestTransactionParams, (err, response, body) => (err || response.statusCode >= 400) ? reject(err) : resolve(body) );
     });
   }
+  
+  cancelTransaction(userId, transactionId, accessToken) {
+    return new Promise( (resolve, reject) => {
+      const requestTransactionParams = {
+        baseUrl: this.baseUrl,
+        uri: `/users/${userId}/transactions/${transactionId}/cancel`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      };
+
+      request(requestTransactionParams, (err, response, body) => (err || response.statusCode >= 400) ? reject(err) : resolve(body) );
+    });
+  }
+
+  refundTransaction(userId, transactionId, accessToken) {
+    return new Promise( (resolve, reject) => {
+      const requestTransactionParams = {
+        baseUrl: this.baseUrl,
+        uri: `/users/${userId}/transactions/${transactionId}/refund`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      };
+
+      request(requestTransactionParams, (err, response, body) => (err || response.statusCode >= 400) ? reject(err) : resolve(body) );
+    });
+  }
 
   insertUser(user, accessToken) {
     return new Promise( (resolve, reject) => {
