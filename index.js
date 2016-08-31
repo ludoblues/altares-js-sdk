@@ -171,6 +171,22 @@ module.exports = class Altares {
       request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
     });
   }
+  
+  updateUserProducts(userId, newProducts, access_token) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.baseUrl,
+        uri: `/users/${userId}/products`,
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${access_token}`
+        },
+        json: newProducts
+      };
+
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
+  }
 
   removeUserProducts(userId, productsToRemove, access_token) {
     return new Promise( (resolve, reject) => {
