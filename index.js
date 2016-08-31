@@ -18,25 +18,20 @@ module.exports = class Altares {
         code: code
       };
 
-      const options = {
+      const requestParameters = {
         baseUrl: this.baseUrl,
         uri: '/token',
         method: 'POST',
         json: payload
       };
 
-      request(options, (err, response, body) => {
-        if (err) return reject(err);
-        if (response.statusCode >= 400) return reject(response.statusCode);
-
-        resolve(body);
-      });
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
     });
   }
 
   getAppAccessToken() {
     return new Promise( (resolve, reject) => {
-      const requestTokenParams = {
+      const requestParameters = {
         baseUrl: `${this.baseUrl}`,
         uri: '/token',
         method: 'POST',
@@ -47,13 +42,13 @@ module.exports = class Altares {
         }
       };
 
-      request(requestTokenParams, (err, response, body) => (err || response.statusCode >= 400) ? reject(err) : resolve(body) );
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
     });
   }
 
   insertTransaction(userId, transaction, accessToken) {
     return new Promise( (resolve, reject) => {
-      const requestTransactionParams = {
+      const requestParameters = {
         baseUrl: this.baseUrl,
         uri: `/users/${userId}/transaction`,
         method: 'POST',
@@ -63,13 +58,13 @@ module.exports = class Altares {
         json: transaction
       };
 
-      request(requestTransactionParams, (err, response, body) => (err || response.statusCode >= 400) ? reject(err) : resolve(body) );
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
     });
   }
 
   getTransaction(userId, transactionId, accessToken) {
     return new Promise( (resolve, reject) => {
-      const requestTransactionParams = {
+      const requestParameters = {
         baseUrl: this.baseUrl,
         uri: `/users/${userId}/transactions/${transactionId}`,
         method: 'GET',
@@ -79,13 +74,13 @@ module.exports = class Altares {
         json: true
       };
 
-      request(requestTransactionParams, (err, response, body) => (err || response.statusCode >= 400) ? reject(err) : resolve(body) );
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
     });
   }
   
   cancelTransaction(userId, transactionId, accessToken) {
     return new Promise( (resolve, reject) => {
-      const requestTransactionParams = {
+      const requestParameters = {
         baseUrl: this.baseUrl,
         uri: `/users/${userId}/transactions/${transactionId}/cancel`,
         method: 'POST',
@@ -94,13 +89,13 @@ module.exports = class Altares {
         }
       };
 
-      request(requestTransactionParams, (err, response, body) => (err || response.statusCode >= 400) ? reject(err) : resolve(body) );
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
     });
   }
 
   refundTransaction(userId, transactionId, accessToken) {
     return new Promise( (resolve, reject) => {
-      const requestTransactionParams = {
+      const requestParameters = {
         baseUrl: this.baseUrl,
         uri: `/users/${userId}/transactions/${transactionId}/refund`,
         method: 'POST',
@@ -109,7 +104,7 @@ module.exports = class Altares {
         }
       };
 
-      request(requestTransactionParams, (err, response, body) => (err || response.statusCode >= 400) ? reject(err) : resolve(body) );
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
     });
   }
 
@@ -125,13 +120,29 @@ module.exports = class Altares {
         json: user
       };
 
-      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err) : resolve(body) );
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
+  };
+  
+  updateUser(userId, userCredentialsToUpdate, accessToken) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.baseUrl,
+        uri: `/users/${userId}`,
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
+        json: userCredentialsToUpdate
+      };
+
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
     });
   };
 
   getUser(userId, access_token) {
     return new Promise( (resolve, reject) => {
-      const options = {
+      const requestParameters = {
         baseUrl: this.baseUrl,
         uri: `/users/${userId}`,
         method: 'GET',
@@ -141,12 +152,39 @@ module.exports = class Altares {
         json: true
       };
 
-      request(options, (err, response, body) => {
-        if (err) return reject(err);
-        if (response.statusCode >= 400) return reject(response.statusCode);
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
+  }
+  
+  addUserProducts(userId, productsToAdd, access_token) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.baseUrl,
+        uri: `/users/${userId}/products`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${access_token}`
+        },
+        json: productsToAdd
+      };
 
-        resolve(body);
-      });
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
+  }
+
+  removeUserProducts(userId, productsToRemove, access_token) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.baseUrl,
+        uri: `/users/${userId}/products`,
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${access_token}`
+        },
+        json: productsToRemove
+      };
+
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
     });
   }
 };
