@@ -46,16 +46,16 @@ module.exports = class Altares {
     });
   }
 
-  insertTransaction(userId, transaction, accessToken) {
+  insertOrder(userId, order, accessToken) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
         baseUrl: this.baseUrl,
-        uri: `/users/${userId}/transaction`,
+        uri: `/users/${userId}/order`,
         method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`
         },
-        json: transaction
+        json: order
       };
 
       request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
@@ -77,7 +77,7 @@ module.exports = class Altares {
       request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
     });
   }
-  
+
   cancelTransaction(userId, transactionId, accessToken) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
@@ -123,7 +123,7 @@ module.exports = class Altares {
       request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
     });
   };
-  
+
   updateUser(userId, userCredentialsToUpdate, accessToken) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
@@ -155,7 +155,7 @@ module.exports = class Altares {
       request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
     });
   }
-  
+
   addUserProducts(userId, productsToAdd, access_token) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
@@ -171,7 +171,7 @@ module.exports = class Altares {
       request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
     });
   }
-  
+
   updateUserProducts(userId, newProducts, access_token) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
