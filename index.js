@@ -1,13 +1,17 @@
-"use strict";
-
 const request = require('request');
 
 module.exports = class Altares {
   constructor(credentials) {
-    this.baseUrl = credentials.baseUrl || 'https://auth.altares.fr';
     this.client_id = credentials.client_id;
     this.client_secret = credentials.client_secret;
+    
+    this.ssoBaseUrl = credentials.baseUrl || 'https://sso.altares.fr';
+    this.paymentBaseUrl = credentials.paymentBaseUrl || 'https://payment.altares.fr';
   }
+
+  /*
+  *** SSO
+  */
 
   getAccessToken(code) {
     return new Promise( (resolve, reject) => {
@@ -19,7 +23,7 @@ module.exports = class Altares {
       };
 
       const requestParameters = {
-        baseUrl: this.baseUrl,
+        baseUrl: this.ssoBaseUrl,
         uri: '/token',
         method: 'POST',
         json: payload
@@ -32,7 +36,7 @@ module.exports = class Altares {
   getAppAccessToken() {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
-        baseUrl: `${this.baseUrl}`,
+        baseUrl: `${this.ssoBaseUrl}`,
         uri: '/token',
         method: 'POST',
         json: {
@@ -46,72 +50,10 @@ module.exports = class Altares {
     });
   }
 
-  insertOrder(userId, order, accessToken) {
-    return new Promise( (resolve, reject) => {
-      const requestParameters = {
-        baseUrl: this.baseUrl,
-        uri: `/users/${userId}/order`,
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        },
-        json: order
-      };
-
-      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
-    });
-  }
-
-  getTransaction(userId, transactionId, accessToken) {
-    return new Promise( (resolve, reject) => {
-      const requestParameters = {
-        baseUrl: this.baseUrl,
-        uri: `/users/${userId}/transactions/${transactionId}`,
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        },
-        json: true
-      };
-
-      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
-    });
-  }
-
-  cancelTransaction(userId, transactionId, accessToken) {
-    return new Promise( (resolve, reject) => {
-      const requestParameters = {
-        baseUrl: this.baseUrl,
-        uri: `/users/${userId}/transactions/${transactionId}/cancel`,
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      };
-
-      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
-    });
-  }
-
-  refundTransaction(userId, transactionId, accessToken) {
-    return new Promise( (resolve, reject) => {
-      const requestParameters = {
-        baseUrl: this.baseUrl,
-        uri: `/users/${userId}/transactions/${transactionId}/refund`,
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      };
-
-      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
-    });
-  }
-
   insertUser(user, accessToken) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
-        baseUrl: this.baseUrl,
+        baseUrl: this.ssoBaseUrl,
         uri: `/users`,
         method: 'POST',
         headers: {
@@ -127,7 +69,7 @@ module.exports = class Altares {
   updateUser(userId, userCredentialsToUpdate, accessToken) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
-        baseUrl: this.baseUrl,
+        baseUrl: this.ssoBaseUrl,
         uri: `/users/${userId}`,
         method: 'PATCH',
         headers: {
@@ -143,7 +85,7 @@ module.exports = class Altares {
   getUser(userId, access_token) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
-        baseUrl: this.baseUrl,
+        baseUrl: this.ssoBaseUrl,
         uri: `/users/${userId}`,
         method: 'GET',
         headers: {
@@ -159,7 +101,7 @@ module.exports = class Altares {
   addUserProducts(userId, productsToAdd, access_token) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
-        baseUrl: this.baseUrl,
+        baseUrl: this.ssoBaseUrl,
         uri: `/users/${userId}/products`,
         method: 'POST',
         headers: {
@@ -175,7 +117,7 @@ module.exports = class Altares {
   updateUserProducts(userId, newProducts, access_token) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
-        baseUrl: this.baseUrl,
+        baseUrl: this.ssoBaseUrl,
         uri: `/users/${userId}/products`,
         method: 'PUT',
         headers: {
@@ -191,13 +133,95 @@ module.exports = class Altares {
   removeUserProducts(userId, productsToRemove, access_token) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
-        baseUrl: this.baseUrl,
+        baseUrl: this.ssoBaseUrl,
         uri: `/users/${userId}/products`,
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${access_token}`
         },
         json: productsToRemove
+      };
+
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
+  }
+
+  /*
+  *** Payment
+  */
+
+  insertOrder(userId, order, accessToken) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.paymentBaseUrl,
+        uri: `/users/${userId}/order`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
+        json: order
+      };
+
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
+  }
+
+  insertTransaction(order, transaction, accessToken) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.paymentBaseUrl,
+        uri: `/order/${order._id}/transaction`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        json: transaction
+      };
+
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
+  }
+
+  getTransaction(userId, transactionId, accessToken) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.paymentBaseUrl,
+        uri: `/users/${userId}/transactions/${transactionId}`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
+        json: true
+      };
+
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
+  }
+
+  cancelTransaction(userId, transactionId, accessToken) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.paymentBaseUrl,
+        uri: `/users/${userId}/transactions/${transactionId}/cancel`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      };
+
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
+  }
+
+  refundTransaction(userId, transactionId, accessToken) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.ssoBaseUrl,
+        uri: `/users/${userId}/transactions/${transactionId}/refund`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
       };
 
       request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
