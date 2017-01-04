@@ -4,8 +4,8 @@ module.exports = class Altares {
   constructor(credentials) {
     this.client_id = credentials.client_id;
     this.client_secret = credentials.client_secret;
-    
-    this.ssoBaseUrl = credentials.baseUrl || 'https://sso.altares.fr';
+
+    this.ssoBaseUrl = credentials.ssoBaseUrl || 'https://sso.altares.fr';
     this.paymentBaseUrl = credentials.paymentBaseUrl || 'https://payment.altares.fr';
   }
 
