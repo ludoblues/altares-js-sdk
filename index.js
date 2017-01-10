@@ -146,6 +146,22 @@ module.exports = class Altares {
     });
   }
 
+  addUserSubscriptions(userId, subscriptionsToAdd, access_token) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.ssoBaseUrl,
+        uri: `/users/${userId}/subscriptions`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${access_token}`
+        },
+        json: subscriptionsToAdd
+      };
+
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
+  }
+
   /*
   *** Payment
   */
