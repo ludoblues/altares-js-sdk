@@ -182,6 +182,22 @@ module.exports = class Altares {
     });
   }
 
+  insertSubscription(userId, subscription, accessToken) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.paymentBaseUrl,
+        uri: `/users/${userId}/subscription`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
+        json: subscription
+      };
+
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
+  }
+
   insertTransaction(order, transaction, accessToken) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
