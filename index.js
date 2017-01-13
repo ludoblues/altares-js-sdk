@@ -166,11 +166,11 @@ module.exports = class Altares {
   *** Payment
   */
 
-  insertOrder(userId, order, accessToken) {
+  insertOrder(order, accessToken) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
         baseUrl: this.paymentBaseUrl,
-        uri: `/users/${userId}/order`,
+        uri: `/order`,
         method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`
@@ -182,11 +182,11 @@ module.exports = class Altares {
     });
   }
 
-  insertSubscription(userId, subscription, accessToken) {
+  insertSubscription(subscription, accessToken) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
         baseUrl: this.paymentBaseUrl,
-        uri: `/users/${userId}/subscription`,
+        uri: `/subscription`,
         method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`
