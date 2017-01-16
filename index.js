@@ -198,6 +198,41 @@ module.exports = class Altares {
     });
   }
 
+  updateSubscriptionCreditCard(userId, subscriptionId, cardTokenId, accessToken) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.paymentBaseUrl,
+        uri: `/subscription/${subscriptionId}/update-credit-card`,
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
+        json: {
+          userId: userId,
+          cardTokenId: cardTokenId
+        }
+      };
+
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
+  }
+
+  stopSubscription(subscriptionId, accessToken) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.paymentBaseUrl,
+        uri: `/subscription/${subscriptionId}/stop`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
+        json: true
+      };
+
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
+  }
+
   insertTransaction(order, transaction, accessToken) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
