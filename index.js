@@ -7,6 +7,24 @@ module.exports = class Altares {
 
     this.ssoBaseUrl = credentials.ssoBaseUrl || 'https://sso.altares.fr';
     this.paymentBaseUrl = credentials.paymentBaseUrl || 'https://payment.altares.fr';
+    this.mailerBaseUrl = credentials.mailerBaseUrl || 'https://mailer.altares.fr';
+  }
+
+  /*
+  *** MAILER
+  */
+
+  sendMail(mailId, payload) {
+    return new Promise( (resolve, reject) => {
+      const requestParameters = {
+        baseUrl: this.mailerBaseUrl,
+        uri: `/mail/${mailId}`,
+        method: 'POST',
+        json: payload
+      };
+
+      request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
+    });
   }
 
   /*
