@@ -14,13 +14,16 @@ module.exports = class Altares {
   *** MAILER
   */
 
-  sendMail(mailId, payload) {
+  sendMail(mailId, payload, accessToken) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
         baseUrl: this.mailerBaseUrl,
         uri: `/mail/${mailId}`,
         method: 'POST',
-        json: payload
+        json: payload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
       };
 
       request(requestParameters, (err, response, body) => (err || response.statusCode >= 400) ? reject(err || body) : resolve(body) );
