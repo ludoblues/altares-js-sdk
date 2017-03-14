@@ -301,14 +301,20 @@ module.exports = class Altares {
     });
   }
 
-  refundTransaction(userId, transactionId, accessToken) {
+  refundTransaction(data, accessToken) {
     return new Promise( (resolve, reject) => {
       const requestParameters = {
-        baseUrl: this.ssoBaseUrl,
-        uri: `/users/${userId}/transactions/${transactionId}/refund`,
+        baseUrl: this.paymentBaseUrl,
+        uri: `/refund`,
         method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`
+        },
+        json: {
+          orderId: data.orderId,
+          transactionId: data.transactionId,
+          amount: data.amount,
+          reason: data.reason
         }
       };
 
