@@ -314,7 +314,8 @@ module.exports = class Altares {
           orderId: data.orderId,
           transactionId: data.transactionId,
           amount: data.amount,
-          reason: data.reason
+          reason: data.reason,
+          refundedProducts: data.refundedProducts || []
         }
       };
 
